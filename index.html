@@ -1,0 +1,1000 @@
+<!doctype html>
+<html lang="vi">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Khám Phá Hệ Mặt Trời</title>
+        <link
+            href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Exo+2:wght@300;400;600&display=swap"
+            rel="stylesheet"
+        />
+        <style>
+            :root {
+                --glow-sun: #ff6b00;
+                --glow-blue: #00cfff;
+                --star-color: #ffffff;
+                --bg: #000008;
+            }
+
+            * {
+                margin: 0;
+                padding: 0;
+                box-sizing: border-box;
+            }
+
+            body {
+                background: var(--bg);
+                overflow: hidden;
+                font-family: "Exo 2", sans-serif;
+                cursor: crosshair;
+                height: 100vh;
+                width: 100vw;
+            }
+
+            /* ── STARS ── */
+            #stars-canvas {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+            }
+
+            /* ── SOLAR SYSTEM ── */
+            #solar-system {
+                position: fixed;
+                inset: 0;
+                z-index: 1;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .system-center {
+                position: relative;
+                width: 0;
+                height: 0;
+            }
+
+            /* ── ORBITS ── */
+            .orbit {
+                position: absolute;
+                border-radius: 50%;
+                border: 1px solid rgba(255, 255, 255, 0.08);
+                transform: translate(-50%, -50%);
+                animation: orbit-spin linear infinite;
+                pointer-events: none;
+            }
+            .orbit::before {
+                content: "";
+                position: absolute;
+                inset: -1px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    rgba(0, 207, 255, 0.04) 0%,
+                    transparent 70%
+                );
+            }
+
+            @keyframes orbit-spin {
+                from {
+                    transform: translate(-50%, -50%) rotate(0deg);
+                }
+                to {
+                    transform: translate(-50%, -50%) rotate(360deg);
+                }
+            }
+
+            /* ── PLANET WRAPPER (counter-rotate to keep label upright) ── */
+            .planet-wrapper {
+                position: absolute;
+                top: 0;
+                left: 50%;
+                transform-origin: 0 0;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                gap: 6px;
+                pointer-events: auto;
+                cursor: pointer;
+                animation: counter-spin linear infinite;
+            }
+
+            @keyframes counter-spin {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(-360deg);
+                }
+            }
+
+            .planet {
+                border-radius: 50%;
+                position: relative;
+                transition:
+                    transform 0.2s ease,
+                    filter 0.2s ease;
+                flex-shrink: 0;
+            }
+            .planet:hover {
+                transform: scale(1.25);
+                filter: brightness(1.4) drop-shadow(0 0 18px currentColor);
+            }
+
+            /* planet glow pulse */
+            .planet::after {
+                content: "";
+                position: absolute;
+                inset: -4px;
+                border-radius: 50%;
+                opacity: 0.4;
+                animation: planet-pulse 3s ease-in-out infinite;
+            }
+            @keyframes planet-pulse {
+                0%,
+                100% {
+                    transform: scale(1);
+                    opacity: 0.4;
+                }
+                50% {
+                    transform: scale(1.15);
+                    opacity: 0.1;
+                }
+            }
+
+            .planet-label {
+                font-family: "Orbitron", monospace;
+                font-size: 9px;
+                letter-spacing: 2px;
+                text-transform: uppercase;
+                color: rgba(255, 255, 255, 0.6);
+                white-space: nowrap;
+                pointer-events: none;
+                text-shadow: 0 0 8px rgba(0, 207, 255, 0.8);
+            }
+
+            /* ── SUN ── */
+            #sun {
+                position: absolute;
+                width: 80px;
+                height: 80px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle at 35% 35%,
+                    #fff7aa,
+                    #ffcc00 30%,
+                    #ff8800 60%,
+                    #cc3300
+                );
+                box-shadow:
+                    0 0 40px 20px rgba(255, 140, 0, 0.6),
+                    0 0 80px 40px rgba(255, 80, 0, 0.3),
+                    0 0 160px 80px rgba(255, 40, 0, 0.15);
+                transform: translate(-50%, -50%);
+                animation: sun-pulse 4s ease-in-out infinite;
+                cursor: pointer;
+                z-index: 5;
+            }
+            #sun::before {
+                content: "";
+                position: absolute;
+                inset: -12px;
+                border-radius: 50%;
+                background: radial-gradient(
+                    circle,
+                    rgba(255, 200, 0, 0.2),
+                    transparent 70%
+                );
+                animation: sun-flare 6s linear infinite;
+            }
+            @keyframes sun-pulse {
+                0%,
+                100% {
+                    box-shadow:
+                        0 0 40px 20px rgba(255, 140, 0, 0.6),
+                        0 0 80px 40px rgba(255, 80, 0, 0.3),
+                        0 0 160px 80px rgba(255, 40, 0, 0.15);
+                }
+                50% {
+                    box-shadow:
+                        0 0 60px 30px rgba(255, 160, 0, 0.8),
+                        0 0 120px 60px rgba(255, 100, 0, 0.4),
+                        0 0 200px 100px rgba(255, 60, 0, 0.2);
+                }
+            }
+            @keyframes sun-flare {
+                from {
+                    transform: rotate(0deg);
+                }
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            #sun-label {
+                position: absolute;
+                top: 52px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-family: "Orbitron", monospace;
+                font-size: 9px;
+                letter-spacing: 3px;
+                color: #ffcc00;
+                text-shadow: 0 0 12px #ff8800;
+                white-space: nowrap;
+                pointer-events: none;
+            }
+
+            /* ── SATURN RING ── */
+            .saturn-ring {
+                position: absolute;
+                width: 56px;
+                height: 14px;
+                border-radius: 50%;
+                border: 3px solid rgba(210, 180, 120, 0.7);
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotateX(70deg);
+                pointer-events: none;
+                box-shadow: 0 0 8px rgba(210, 180, 120, 0.3);
+            }
+
+            /* ── TOOLTIP ── */
+            #tooltip {
+                position: fixed;
+                background: linear-gradient(
+                    135deg,
+                    rgba(0, 10, 30, 0.96),
+                    rgba(0, 30, 60, 0.96)
+                );
+                border: 1px solid rgba(0, 207, 255, 0.4);
+                border-radius: 16px;
+                padding: 20px 26px;
+                max-width: 320px;
+                z-index: 1000;
+                pointer-events: none;
+                opacity: 0;
+                transform: scale(0.8) translateY(10px);
+                transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+                backdrop-filter: blur(20px);
+                box-shadow:
+                    0 0 40px rgba(0, 207, 255, 0.15),
+                    0 20px 60px rgba(0, 0, 0, 0.5),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            }
+            #tooltip.show {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+                pointer-events: none;
+            }
+            .tooltip-title {
+                font-family: "Orbitron", monospace;
+                font-size: 16px;
+                font-weight: 900;
+                color: var(--glow-blue);
+                text-shadow: 0 0 15px var(--glow-blue);
+                margin-bottom: 8px;
+                letter-spacing: 2px;
+            }
+            .tooltip-fact {
+                font-size: 12px;
+                color: rgba(200, 230, 255, 0.8);
+                line-height: 1.6;
+                margin-bottom: 10px;
+            }
+            .tooltip-troll {
+                font-size: 13px;
+                font-weight: 600;
+                color: #ff4d6d;
+                text-shadow: 0 0 10px rgba(255, 77, 109, 0.5);
+                border-top: 1px solid rgba(255, 77, 109, 0.2);
+                padding-top: 10px;
+                line-height: 1.5;
+            }
+            .tooltip-emoji {
+                font-size: 22px;
+            }
+
+            /* ── MODAL (click) ── */
+            #modal-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 20, 0.85);
+                z-index: 900;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                opacity: 0;
+                pointer-events: none;
+                transition: opacity 0.3s;
+                backdrop-filter: blur(6px);
+            }
+            #modal-overlay.show {
+                opacity: 1;
+                pointer-events: all;
+            }
+            #modal-box {
+                background: linear-gradient(160deg, #000c24, #001a3a);
+                border: 1px solid rgba(0, 207, 255, 0.3);
+                border-radius: 24px;
+                padding: 40px 44px;
+                max-width: 420px;
+                width: 90%;
+                text-align: center;
+                transform: scale(0.85);
+                transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                box-shadow:
+                    0 0 60px rgba(0, 207, 255, 0.1),
+                    0 40px 80px rgba(0, 0, 0, 0.6),
+                    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+                position: relative;
+                overflow: hidden;
+            }
+            #modal-box::before {
+                content: "";
+                position: absolute;
+                top: -50%;
+                left: -50%;
+                width: 200%;
+                height: 200%;
+                background: conic-gradient(
+                    from 0deg,
+                    transparent 0%,
+                    rgba(0, 207, 255, 0.03) 25%,
+                    transparent 50%
+                );
+                animation: modal-spin 8s linear infinite;
+            }
+            @keyframes modal-spin {
+                to {
+                    transform: rotate(360deg);
+                }
+            }
+            #modal-overlay.show #modal-box {
+                transform: scale(1);
+            }
+
+            .modal-planet-icon {
+                font-size: 64px;
+                margin-bottom: 12px;
+                display: block;
+                filter: drop-shadow(0 0 20px rgba(0, 207, 255, 0.5));
+                animation: modal-bounce 1s ease-in-out infinite alternate;
+            }
+            @keyframes modal-bounce {
+                from {
+                    transform: translateY(0);
+                }
+                to {
+                    transform: translateY(-8px);
+                }
+            }
+            .modal-planet-name {
+                font-family: "Orbitron", monospace;
+                font-size: 22px;
+                font-weight: 900;
+                color: #ffffff;
+                text-shadow: 0 0 20px var(--glow-blue);
+                letter-spacing: 3px;
+                margin-bottom: 14px;
+            }
+            .modal-fact {
+                font-size: 13px;
+                color: rgba(180, 220, 255, 0.85);
+                line-height: 1.7;
+                margin-bottom: 20px;
+            }
+            .modal-troll-box {
+                background: linear-gradient(
+                    135deg,
+                    rgba(255, 30, 80, 0.12),
+                    rgba(255, 100, 0, 0.08)
+                );
+                border: 1px solid rgba(255, 60, 90, 0.35);
+                border-radius: 14px;
+                padding: 16px 20px;
+                margin-bottom: 22px;
+            }
+            .modal-troll-title {
+                font-family: "Orbitron", monospace;
+                font-size: 11px;
+                letter-spacing: 2px;
+                color: #ff6b6b;
+                margin-bottom: 8px;
+            }
+            .modal-troll-text {
+                font-size: 15px;
+                font-weight: 600;
+                color: #ff4d6d;
+                line-height: 1.5;
+                text-shadow: 0 0 12px rgba(255, 77, 109, 0.4);
+            }
+            .modal-iq {
+                font-family: "Orbitron", monospace;
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.3);
+                letter-spacing: 2px;
+                margin-bottom: 20px;
+            }
+            #modal-close {
+                background: linear-gradient(135deg, #0066cc, #0044aa);
+                border: none;
+                color: white;
+                font-family: "Orbitron", monospace;
+                font-size: 11px;
+                letter-spacing: 2px;
+                padding: 12px 28px;
+                border-radius: 50px;
+                cursor: pointer;
+                transition: all 0.2s;
+                box-shadow: 0 0 20px rgba(0, 100, 255, 0.3);
+            }
+            #modal-close:hover {
+                background: linear-gradient(135deg, #0088ff, #0055dd);
+                transform: scale(1.05);
+                box-shadow: 0 0 30px rgba(0, 150, 255, 0.5);
+            }
+
+            /* ── HEADER ── */
+            #header {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 10;
+                padding: 20px 30px;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                background: linear-gradient(
+                    to bottom,
+                    rgba(0, 0, 20, 0.9),
+                    transparent
+                );
+            }
+            .header-title {
+                font-family: "Orbitron", monospace;
+                font-size: 18px;
+                font-weight: 900;
+                color: white;
+                letter-spacing: 4px;
+                text-shadow: 0 0 20px rgba(0, 207, 255, 0.6);
+            }
+            .header-title span {
+                color: var(--glow-blue);
+            }
+            .header-hint {
+                font-size: 11px;
+                color: rgba(255, 255, 255, 0.35);
+                letter-spacing: 2px;
+                animation: blink 2s ease-in-out infinite;
+            }
+            @keyframes blink {
+                0%,
+                100% {
+                    opacity: 0.35;
+                }
+                50% {
+                    opacity: 0.9;
+                }
+            }
+
+            /* ── SHOOTING STARS ── */
+            .shooting-star {
+                position: fixed;
+                width: 2px;
+                height: 2px;
+                background: white;
+                border-radius: 50%;
+                z-index: 0;
+                pointer-events: none;
+            }
+            .shooting-star::after {
+                content: "";
+                position: absolute;
+                top: 0;
+                right: 0;
+                width: 80px;
+                height: 1px;
+                background: linear-gradient(to left, white, transparent);
+                transform-origin: right center;
+            }
+
+            /* ── PARTICLE BURST (on click) ── */
+            .particle {
+                position: fixed;
+                width: 4px;
+                height: 4px;
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: 999;
+                animation: particle-fly 0.8s ease-out forwards;
+            }
+            @keyframes particle-fly {
+                0% {
+                    opacity: 1;
+                    transform: translate(0, 0) scale(1);
+                }
+                100% {
+                    opacity: 0;
+                    transform: translate(var(--tx), var(--ty)) scale(0);
+                }
+            }
+
+            /* ── NEBULA BG ── */
+            #nebula {
+                position: fixed;
+                inset: 0;
+                z-index: 0;
+                background:
+                    radial-gradient(
+                        ellipse 60% 40% at 20% 50%,
+                        rgba(20, 0, 60, 0.5) 0%,
+                        transparent 70%
+                    ),
+                    radial-gradient(
+                        ellipse 40% 60% at 80% 30%,
+                        rgba(0, 20, 60, 0.4) 0%,
+                        transparent 70%
+                    ),
+                    radial-gradient(
+                        ellipse 50% 50% at 60% 80%,
+                        rgba(0, 40, 30, 0.3) 0%,
+                        transparent 70%
+                    );
+                pointer-events: none;
+            }
+
+            /* Responsive tweaks */
+            @media (max-width: 600px) {
+                .orbit {
+                    border: 1px solid rgba(255, 255, 255, 0.06);
+                }
+                #sun {
+                    width: 54px;
+                    height: 54px;
+                }
+            }
+        </style>
+    </head>
+    <body>
+        <div id="nebula"></div>
+        <canvas id="stars-canvas"></canvas>
+
+        <div id="header">
+            <div class="header-title">HỆ <span>MẶT TRỜI</span></div>
+            <div class="header-hint">⚡ CLICK VÀO HÀNH TINH ⚡</div>
+        </div>
+
+        <div id="solar-system">
+            <div class="system-center" id="system-center">
+                <div id="sun">
+                    <div id="sun-label">MẶT TRỜI</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tooltip (hover) -->
+        <div id="tooltip">
+            <div class="tooltip-title" id="tt-title"></div>
+            <div class="tooltip-fact" id="tt-fact"></div>
+            <div class="tooltip-troll">
+                <span class="tooltip-emoji" id="tt-emoji"></span>
+                <span id="tt-troll"></span>
+            </div>
+        </div>
+
+        <!-- Modal (click) -->
+        <div id="modal-overlay">
+            <div id="modal-box">
+                <span class="modal-planet-icon" id="m-icon"></span>
+                <div class="modal-planet-name" id="m-name"></div>
+                <div class="modal-fact" id="m-fact"></div>
+                <div class="modal-troll-box">
+                    <div class="modal-troll-title">
+                        🛸 KẾT QUẢ PHÂN TÍCH NASA
+                    </div>
+                    <div class="modal-troll-text" id="m-troll"></div>
+                </div>
+                <div class="modal-iq" id="m-iq"></div>
+                <button id="modal-close">ĐÓNG LẠI</button>
+            </div>
+        </div>
+
+        <script>
+            // ─── PLANET DATA ───────────────────────────────────────────────
+            const planets = [
+                {
+                    name: "MERCURY",
+                    viet: "Sao Thủy",
+                    emoji: "🪨",
+                    color: "#b5b5b5",
+                    glow: "#cccccc",
+                    size: 10,
+                    orbitR: 80,
+                    speed: 8,
+                    fact: "Hành tinh nhỏ nhất hệ mặt trời, một ngày ở đây dài hơn một năm của nó.",
+                    hoverTroll: "Nhỏ mà... vẫn khổng lồ hơn IQ của bạn 💀",
+                    troll: "NASA vừa xác nhận: người click vào Sao Thủy có chỉ số IQ bằng nhiệt độ ban đêm ở đây — âm 180°C. Tức là... rất thấp. 🥶",
+                    iq: "[ IQ ĐO ĐƯỢC: -180 ]",
+                },
+                {
+                    name: "VENUS",
+                    viet: "Sao Kim",
+                    emoji: "🌕",
+                    color: "#e8c97a",
+                    glow: "#ffdd88",
+                    size: 18,
+                    orbitR: 116,
+                    speed: 14,
+                    fact: "Nóng nhất hệ mặt trời dù không gần Mặt Trời nhất, nhiệt độ đạt 465°C.",
+                    hoverTroll:
+                        "Nóng kinh khủng — giống IQ bạn vậy, ở dưới 0 🔥",
+                    troll: "Sao Kim quay ngược chiều với các hành tinh khác — giống bạn, lúc nào cũng đi ngược với khoa học và logic. 🙃",
+                    iq: "[ IQ ĐO ĐƯỢC: ngược chiều vũ trụ ]",
+                },
+                {
+                    name: "EARTH",
+                    viet: "Trái Đất",
+                    emoji: "🌍",
+                    color: "#4a9eff",
+                    glow: "#00aaff",
+                    size: 20,
+                    orbitR: 155,
+                    speed: 20,
+                    fact: "Hành tinh duy nhất có sự sống được biết đến trong vũ trụ, 71% bề mặt là nước.",
+                    hoverTroll:
+                        "Nơi duy nhất trong vũ trụ có wifi — và bạn dùng nó để... click vào đây 😭",
+                    troll: "Trái Đất có 8 tỷ người thông minh hơn bạn đang nhìn thấy điều này. Xin chào! 👋 P/s: khoa học đã chứng minh bạn vừa mất 3 nơ-ron thần kinh khi click vào đây.",
+                    iq: "[ IQ ĐO ĐƯỢC: chia cho 8,000,000,000 ]",
+                },
+                {
+                    name: "MARS",
+                    viet: "Sao Hỏa",
+                    emoji: "🔴",
+                    color: "#cc4422",
+                    glow: "#ff5533",
+                    size: 15,
+                    orbitR: 195,
+                    speed: 30,
+                    fact: "Hành tinh đỏ với núi lửa lớn nhất hệ mặt trời — Olympus Mons cao 21km.",
+                    hoverTroll:
+                        "Elon Musk muốn đưa người lên đây... trừ bạn ra 🚀",
+                    troll: "Elon Musk vừa hủy vé tàu vũ trụ lên Sao Hỏa của bạn vì máy tính AI phát hiện bạn không đủ IQ tối thiểu để mở cửa tàu. 🚀❌",
+                    iq: "[ IQ ĐO ĐƯỢC: dưới ngưỡng mở cửa tàu ]",
+                },
+                {
+                    name: "JUPITER",
+                    viet: "Sao Mộc",
+                    emoji: "🟠",
+                    color: "#c88b3a",
+                    glow: "#ffaa55",
+                    size: 36,
+                    orbitR: 260,
+                    speed: 48,
+                    fact: "Hành tinh lớn nhất, nặng hơn tất cả hành tinh còn lại cộng lại, có vết đỏ lớn tồn tại 300 năm.",
+                    hoverTroll:
+                        "To nhất hệ mặt trời nhưng IQ bạn vẫn to hơn... à không, nhỏ hơn 😅",
+                    troll: "Sao Mộc có lực hấp dẫn mạnh đến mức kéo sao chổi vào nó để bảo vệ Trái Đất. Còn bạn? Bạn kéo cả sự ngu ngốc vào vũ trụ. 🪐💥",
+                    iq: "[ IQ ĐO ĐƯỢC: bị lực hấp dẫn hút mất ]",
+                },
+                {
+                    name: "SATURN",
+                    viet: "Sao Thổ",
+                    emoji: "🪐",
+                    color: "#d4aa70",
+                    glow: "#eeccaa",
+                    size: 30,
+                    orbitR: 325,
+                    speed: 68,
+                    fact: "Có vành đai nổi tiếng làm từ băng và đá, nhẹ đến mức có thể nổi trên nước.",
+                    hoverTroll:
+                        "Có vành đai đẹp nhất vũ trụ — bạn chỉ có vành đai... quần 😂",
+                    troll: "Sao Thổ nhẹ đến mức nổi được trên nước. Não bạn thì nhẹ đến mức nổi được trên... không khí. NASA đã chính thức ghi nhận. 🧠🎈",
+                    iq: "[ IQ ĐO ĐƯỢC: nhẹ như bọt biển ]",
+                    hasRing: true,
+                },
+                {
+                    name: "URANUS",
+                    viet: "Sao Thiên Vương",
+                    emoji: "🔵",
+                    color: "#7de8e8",
+                    glow: "#aaf5f5",
+                    size: 24,
+                    orbitR: 385,
+                    speed: 92,
+                    fact: "Quay nghiêng 98° so với trục quỹ đạo — gần như lăn tròn quanh Mặt Trời.",
+                    hoverTroll:
+                        "Hành tinh xấu hổ nhất vì cái tên — giống bạn, xấu hổ cả vũ trụ 😳",
+                    troll: "Sao Thiên Vương bị lăn tròn do va chạm thiên thể hàng tỷ năm trước. Bạn click vào đây... không có lý do gì cả. Đó mới là thảm họa thực sự. 🌀",
+                    iq: "[ IQ ĐO ĐƯỢC: quay nghiêng 98° ]",
+                },
+                {
+                    name: "NEPTUNE",
+                    viet: "Sao Hải Vương",
+                    emoji: "🔷",
+                    color: "#3355ff",
+                    glow: "#4466ff",
+                    size: 22,
+                    orbitR: 435,
+                    speed: 115,
+                    fact: "Có gió mạnh nhất hệ mặt trời, đạt 2.100 km/h. Chưa ai đặt chân đến đây.",
+                    hoverTroll:
+                        "Xa nhất, lạnh nhất — mô tả chính xác mức độ warm IQ của bạn 🧊",
+                    troll: "Sao Hải Vương cách Trái Đất 4.5 tỷ km. Tàu Voyager 2 mất 12 năm để đến đó. Thông tin hữu ích hơn nhiều so với việc bạn vừa click vào đây. 🌊🚀",
+                    iq: "[ IQ ĐO ĐƯỢC: 4.5 tỷ km từ bình thường ]",
+                },
+            ];
+
+            // ─── STAR CANVAS ───────────────────────────────────────────────
+            const canvas = document.getElementById("stars-canvas");
+            const ctx = canvas.getContext("2d");
+            let stars = [];
+
+            function resizeCanvas() {
+                canvas.width = window.innerWidth;
+                canvas.height = window.innerHeight;
+            }
+            resizeCanvas();
+            window.addEventListener("resize", () => {
+                resizeCanvas();
+                buildStars();
+            });
+
+            function buildStars() {
+                stars = [];
+                const n = Math.floor((canvas.width * canvas.height) / 2200);
+                for (let i = 0; i < n; i++) {
+                    stars.push({
+                        x: Math.random() * canvas.width,
+                        y: Math.random() * canvas.height,
+                        r: Math.random() * 1.5 + 0.2,
+                        alpha: Math.random() * 0.7 + 0.2,
+                        dAlpha: (Math.random() - 0.5) * 0.01,
+                        speed: Math.random() * 0.15 + 0.02,
+                    });
+                }
+            }
+            buildStars();
+
+            function drawStars() {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+                stars.forEach((s) => {
+                    s.alpha += s.dAlpha;
+                    if (s.alpha > 0.9 || s.alpha < 0.1) s.dAlpha *= -1;
+                    ctx.beginPath();
+                    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+                    ctx.fillStyle = `rgba(255,255,255,${s.alpha})`;
+                    ctx.fill();
+                });
+                requestAnimationFrame(drawStars);
+            }
+            drawStars();
+
+            // ─── SHOOTING STARS ────────────────────────────────────────────
+            function createShootingStar() {
+                const el = document.createElement("div");
+                el.className = "shooting-star";
+                const startX = Math.random() * window.innerWidth;
+                const startY = Math.random() * window.innerHeight * 0.5;
+                const angle = 20 + Math.random() * 30;
+                const length = 80 + Math.random() * 120;
+                el.style.cssText = `left:${startX}px;top:${startY}px;`;
+                document.body.appendChild(el);
+                const kf = [
+                    {
+                        transform: `translate(0,0) rotate(${angle}deg)`,
+                        opacity: 1,
+                    },
+                    {
+                        transform: `translate(${length * 1.5}px,${length * 0.6}px) rotate(${angle}deg)`,
+                        opacity: 0,
+                    },
+                ];
+                const anim = el.animate(kf, {
+                    duration: 700 + Math.random() * 400,
+                    easing: "ease-out",
+                });
+                anim.onfinish = () => el.remove();
+            }
+            setInterval(createShootingStar, 2200);
+
+            // ─── BUILD PLANETS ─────────────────────────────────────────────
+            const center = document.getElementById("system-center");
+            const vw = () => window.innerWidth;
+            const vh = () => window.innerHeight;
+            const maxR = () => Math.min(vw(), vh()) * 0.46;
+
+            function getScale() {
+                return maxR() / 435; // 435 = outermost orbit radius in "design units"
+            }
+
+            planets.forEach((p, i) => {
+                const sc = getScale();
+                const r = p.orbitR * sc;
+                const pSize = Math.max(p.size * sc * 1.4, 6);
+
+                // orbit ring
+                const orbit = document.createElement("div");
+                orbit.className = "orbit";
+                orbit.style.cssText = `
+    width:${r * 2}px; height:${r * 2}px;
+    animation-duration:${p.speed}s;
+    animation-direction: normal;
+  `;
+                center.appendChild(orbit);
+
+                // planet wrapper (sits on orbit, counter-rotates)
+                const wrapper = document.createElement("div");
+                wrapper.className = "planet-wrapper";
+                wrapper.style.cssText = `
+    top: -${r}px;
+    animation-duration:${p.speed}s;
+  `;
+                wrapper.dataset.index = i;
+
+                // planet div
+                const planet = document.createElement("div");
+                planet.className = "planet";
+                planet.style.cssText = `
+    width:${pSize}px; height:${pSize}px;
+    background: radial-gradient(circle at 35% 30%, ${lighten(p.color)}, ${p.color} 55%, ${darken(p.color)});
+    box-shadow: 0 0 ${pSize}px ${pSize / 2}px ${p.color}44, 0 0 ${pSize * 2}px ${pSize}px ${p.color}22;
+    color: ${p.glow};
+  `;
+                planet.style.setProperty("--planet-glow", p.glow);
+
+                // Saturn ring
+                if (p.hasRing) {
+                    const ring = document.createElement("div");
+                    ring.className = "saturn-ring";
+                    ring.style.width = `${pSize * 2}px`;
+                    ring.style.height = `${pSize * 0.45}px`;
+                    planet.appendChild(ring);
+                }
+
+                // label
+                const label = document.createElement("div");
+                label.className = "planet-label";
+                label.textContent = p.viet;
+
+                wrapper.appendChild(planet);
+                wrapper.appendChild(label);
+                orbit.appendChild(wrapper);
+
+                // ── HOVER tooltip ──
+                wrapper.addEventListener("mouseenter", (e) =>
+                    showTooltip(e, p),
+                );
+                wrapper.addEventListener("mousemove", (e) => moveTooltip(e));
+                wrapper.addEventListener("mouseleave", hideTooltip);
+
+                // ── CLICK modal ──
+                wrapper.addEventListener("click", (e) => {
+                    e.stopPropagation();
+                    spawnParticles(e.clientX, e.clientY, p.color);
+                    showModal(p);
+                });
+            });
+
+            // Sun click
+            document.getElementById("sun").addEventListener("click", (e) => {
+                spawnParticles(e.clientX, e.clientY, "#ffcc00");
+                showModal({
+                    name: "MẶT TRỜI",
+                    viet: "Mặt Trời",
+                    emoji: "☀️",
+                    fact: "Chiếm 99.86% tổng khối lượng hệ mặt trời, nhiệt độ bề mặt đạt 5.500°C.",
+                    troll: "Bạn vừa nhìn thẳng vào Mặt Trời kỹ thuật số. NASA xác nhận: đây là hành động thứ 2 ngu nhất trong vũ trụ, chỉ sau việc nhìn thẳng vào Mặt Trời thật. 🌞🕶️",
+                    iq: "[ IQ ĐO ĐƯỢC: bị thiêu rụi ]",
+                });
+            });
+
+            // ─── TOOLTIP ───────────────────────────────────────────────────
+            const tooltip = document.getElementById("tooltip");
+            const ttTitle = document.getElementById("tt-title");
+            const ttFact = document.getElementById("tt-fact");
+            const ttEmoji = document.getElementById("tt-emoji");
+            const ttTroll = document.getElementById("tt-troll");
+
+            function showTooltip(e, p) {
+                ttTitle.textContent = p.viet;
+                ttFact.textContent = p.fact;
+                ttEmoji.textContent = "🛸";
+                ttTroll.textContent = p.hoverTroll || "";
+                moveTooltip(e);
+                tooltip.classList.add("show");
+            }
+            function moveTooltip(e) {
+                let x = e.clientX + 18,
+                    y = e.clientY - 10;
+                if (x + 320 > window.innerWidth) x = e.clientX - 330;
+                if (y + 160 > window.innerHeight) y = e.clientY - 160;
+                tooltip.style.left = x + "px";
+                tooltip.style.top = y + "px";
+            }
+            function hideTooltip() {
+                tooltip.classList.remove("show");
+            }
+
+            // ─── MODAL ─────────────────────────────────────────────────────
+            const overlay = document.getElementById("modal-overlay");
+            const mIcon = document.getElementById("m-icon");
+            const mName = document.getElementById("m-name");
+            const mFact = document.getElementById("m-fact");
+            const mTroll = document.getElementById("m-troll");
+            const mIq = document.getElementById("m-iq");
+
+            function showModal(p) {
+                hideTooltip();
+                mIcon.textContent = p.emoji;
+                mName.textContent = p.viet;
+                mFact.textContent = p.fact;
+                mTroll.textContent = p.troll;
+                mIq.textContent = p.iq || "";
+                overlay.classList.add("show");
+            }
+
+            document
+                .getElementById("modal-close")
+                .addEventListener("click", () => {
+                    overlay.classList.remove("show");
+                });
+            overlay.addEventListener("click", (e) => {
+                if (e.target === overlay) overlay.classList.remove("show");
+            });
+            document.addEventListener("keydown", (e) => {
+                if (e.key === "Escape") overlay.classList.remove("show");
+            });
+
+            // ─── PARTICLE BURST ────────────────────────────────────────────
+            function spawnParticles(cx, cy, color) {
+                for (let i = 0; i < 18; i++) {
+                    const p = document.createElement("div");
+                    p.className = "particle";
+                    const angle = (i / 18) * Math.PI * 2;
+                    const dist = 40 + Math.random() * 60;
+                    p.style.cssText = `
+      left:${cx}px; top:${cy}px;
+      background:${color};
+      box-shadow: 0 0 6px ${color};
+      --tx: ${Math.cos(angle) * dist}px;
+      --ty: ${Math.sin(angle) * dist}px;
+      animation-duration:${0.5 + Math.random() * 0.4}s;
+    `;
+                    document.body.appendChild(p);
+                    setTimeout(() => p.remove(), 900);
+                }
+            }
+
+            // ─── COLOR HELPERS ─────────────────────────────────────────────
+            function lighten(hex) {
+                const n = parseInt(hex.slice(1), 16);
+                const r = Math.min(255, ((n >> 16) & 0xff) + 80);
+                const g = Math.min(255, ((n >> 8) & 0xff) + 80);
+                const b = Math.min(255, (n & 0xff) + 80);
+                return `rgb(${r},${g},${b})`;
+            }
+            function darken(hex) {
+                const n = parseInt(hex.slice(1), 16);
+                const r = Math.max(0, ((n >> 16) & 0xff) - 60);
+                const g = Math.max(0, ((n >> 8) & 0xff) - 60);
+                const b = Math.max(0, (n & 0xff) - 60);
+                return `rgb(${r},${g},${b})`;
+            }
+
+            // ─── RESPONSIVE REBUILD ────────────────────────────────────────
+            const scanLine = document.createElement("div");
+            scanLine.style.cssText = `
+  position:fixed;inset:0;z-index:2;pointer-events:none;
+  background: repeating-linear-gradient(
+    to bottom,
+    transparent 0px,
+    transparent 3px,
+    rgba(0,0,0,0.03) 3px,
+    rgba(0,0,0,0.03) 4px
+  );
+`;
+            document.body.appendChild(scanLine);
+        </script>
+    </body>
+</html>
